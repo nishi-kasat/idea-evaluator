@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+
+<div class="bg-white p-8 rounded-2xl shadow-xl w-1/2">
+  
+  <h1 class="text-3xl font-bold mb-6 text-center">
+    AI Idea Evaluator
+  </h1>
+
+  <textarea id="idea"
+    class="w-full p-3 border rounded-lg mb-4"
+    placeholder="Enter your startup idea..."></textarea>
+
+  <button onclick="evaluateIdea()"
+    class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+    Evaluate Idea
+  </button>
+
+  <div id="results" class="mt-6 hidden">
+    
+    <div class="grid grid-cols-2 gap-4">
+      <div class="p-4 bg-gray-100 rounded-lg">Feasibility: <span id="f"></span></div>
+      <div class="p-4 bg-gray-100 rounded-lg">Innovation: <span id="i"></span></div>
+      <div class="p-4 bg-gray-100 rounded-lg">Market: <span id="m"></span></div>
+      <div class="p-4 bg-gray-100 rounded-lg">Risk: <span id="r"></span></div>
+    </div>
+
+    <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+      <p id="feedback"></p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+async function evaluateIdea() {
+  const idea = document.getElementById("idea").value;
+
+  const res = await fetch("/evaluate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({idea})
+  });
+
+  const data = await res.json();
+
+  document.getElementById("results").classList.remove("hidden");
+
+  document.getElementById("f").innerText = data.feasibility.toFixed(2);
+  document.getElementById("i").innerText = data.innovation.toFixed(2);
+  document.getElementById("m").innerText = data.market.toFixed(2);
+  document.getElementById("r").innerText = data.risk.toFixed(2);
+  document.getElementById("feedback").innerText = data.feedback;
+}
+</script>
+
+</body>
+</html>
